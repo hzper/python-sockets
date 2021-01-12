@@ -3,3 +3,5 @@ Zadatke realizirati pomoću socketa ili rpc-a u Python-u:
 -Klijenti se prilikom pokretanja javljaju serveru i dostavljaju mu svoju IP adresu i mrežni port na kojem očekuju dolazne veze
 -Server održava popis dostavljenih adresa
 -Klijent može serveru uputiti zahjev za dostavu popisa. Nakon što mu se dostavi popis, klijent ga ispisuje na konzolu.
+
+https://realpython.com/python-sockets/
