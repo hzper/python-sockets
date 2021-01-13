@@ -1,80 +1,80 @@
-import rpyc
-import random
-import socket
+# import rpyc
+# import random
+# import socket
 
-#primatelj:[br_poruka,posiljatelj1,poruka1,posiljatelj2,poruka2]
-poruke={}
-clanovi={}
+# #primatelj:[br_poruka,posiljatelj1,poruka1,posiljatelj2,poruka2]
+# poruke={}
+# clanovi={}
 
-print(socket.gethostbyname(socket.gethostname())) #ispisuje ip adresu servera
+# print(socket.gethostbyname(socket.gethostname())) #ispisuje ip adresu servera
 
-#dodaje na popis nick i njegovu ip adresu
-def dodaj_clana(ip,nick):
-    global clanovi
-    clanovi.update({nick:ip})
+# #dodaje na popis nick i njegovu ip adresu
+# def dodaj_clana(ip,nick):
+#     global clanovi
+#     clanovi.update({nick:ip})
 
-#dohvaća ip adresu na temelju nicka. ukoliko na popisu nema nicka, vraća False        
-def dohvati_adresu(nick):
-    global clanovi
-    temp=clanovi.get(nick)
-    if temp == None:
-        return False
-    else:
-        return temp
+# #dohvaća ip adresu na temelju nicka. ukoliko na popisu nema nicka, vraća False        
+# def dohvati_adresu(nick):
+#     global clanovi
+#     temp=clanovi.get(nick)
+#     if temp == None:
+#         return False
+#     else:
+#         return temp
 
-#dohvaća nick na temelju ip adrese. ukoliko na popisu nema nicka, vraća False
-def dohvati_nick(ip):
-    global clanovi
-    for i,j in clanovi.items():
-        if j == ip:
-            return i
-    return False   
+# #dohvaća nick na temelju ip adrese. ukoliko na popisu nema nicka, vraća False
+# def dohvati_nick(ip):
+#     global clanovi
+#     for i,j in clanovi.items():
+#         if j == ip:
+#             return i
+#     return False   
         
-# sprema poruku u rječnik "poruke". Ip adresa primatelja sprema se kao ključ,
-# dok je uz ključ spremljena vrijednost u obliku liste koja se sastoji od:
-# [broj_poruka_za_primatelja,pošiljatelj 1. poruke,1.poruka,pošiljatelj 2. poruke,2.poruka,....]
-def spremi_poruku(prim,posi,poru): #sprema poruku
-    global poruke
-    if prim not in poruke.keys():
-        poruke.update({prim:[1,posi,poru]})
-    else:
-        temp= poruke.get(prim)
-        temp.append(posi)
-        temp.append(poru)
-        temp[0]=temp[0]+1
-        poruke.update({prim:temp})
+# # sprema poruku u rječnik "poruke". Ip adresa primatelja sprema se kao ključ,
+# # dok je uz ključ spremljena vrijednost u obliku liste koja se sastoji od:
+# # [broj_poruka_za_primatelja,pošiljatelj 1. poruke,1.poruka,pošiljatelj 2. poruke,2.poruka,....]
+# def spremi_poruku(prim,posi,poru): #sprema poruku
+#     global poruke
+#     if prim not in poruke.keys():
+#         poruke.update({prim:[1,posi,poru]})
+#     else:
+#         temp= poruke.get(prim)
+#         temp.append(posi)
+#         temp.append(poru)
+#         temp[0]=temp[0]+1
+#         poruke.update({prim:temp})
 
-#vraća False ako nema poruka
-#ako ima vraća listu [broj_poruka_za_primatelja,pošiljatelj 1. poruke,1.poruka,pošiljatelj 2. poruke,2.poruka,....]
-def uzmi_poruku(prim):
-    global poruke
-    if prim not in poruke.keys():
-        return False
-    else:
-        temp= poruke.get(prim)
-        del(poruke[prim])
-        return temp 
+# #vraća False ako nema poruka
+# #ako ima vraća listu [broj_poruka_za_primatelja,pošiljatelj 1. poruke,1.poruka,pošiljatelj 2. poruke,2.poruka,....]
+# def uzmi_poruku(prim):
+#     global poruke
+#     if prim not in poruke.keys():
+#         return False
+#     else:
+#         temp= poruke.get(prim)
+#         del(poruke[prim])
+#         return temp 
 
-class MyService(rpyc.Service):
-    def on_connect(self, conn):
-        pass
+# class MyService(rpyc.Service):
+#     def on_connect(self, conn):
+#         pass
 
-    def on_disconnect(self, conn):
-        pass
+#     def on_disconnect(self, conn):
+#         pass
     
-    def exposed_registriraj_nick(self, ip, nick):
-        pass
+#     def exposed_registriraj_nick(self, ip, nick):
+#         pass
 
-    def exposed_dohvati_nick(self, ip_provjera):
-        pass
+#     def exposed_dohvati_nick(self, ip_provjera):
+#         pass
 
-    def exposed_posalji_poruku(self, primatelj, ip_klijenta, poruka):
-        pass
+#     def exposed_posalji_poruku(self, primatelj, ip_klijenta, poruka):
+#         pass
         
-    def exposed_provjeri_poruke(self,ip_klijenta):
-        pass
+#     def exposed_provjeri_poruke(self,ip_klijenta):
+#         pass
     
-if __name__ == "__main__":
-    from rpyc.utils.server import ThreadedServer
-    t = ThreadedServer(MyService, port=25555)
-    t.start()
+# if __name__ == "__main__":
+#     from rpyc.utils.server import ThreadedServer
+#     t = ThreadedServer(MyService, port=25555)
+#     t.start()
