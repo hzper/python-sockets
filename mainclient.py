@@ -6,6 +6,7 @@ messages = [b'Message 1 from client.', b'Message 2 from client.']
 
 HOST = '127.0.0.1'
 PORT = 65432
+
 sel = selectors.DefaultSelector()
 nb_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 nb_socket.bind((HOST,PORT))

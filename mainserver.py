@@ -1,8 +1,8 @@
-import socket # uvoz modula socket
+import socket
 import selectors
 import types
 
-HOST = ''
+HOST = '127.0.0.1'
 PORT = 65432
 
 sel = selectors.DefaultSelector()
