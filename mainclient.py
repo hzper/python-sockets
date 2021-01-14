@@ -2,7 +2,7 @@ import socket
 import selectors 
 import types
 
-messages = [b'Message 1 from client.', b'Message 2 from client.']
+messages = [b'Prva poruka s klijenta.', b'Druga poruka s klijenta.']
 
 HOST = '127.0.0.1'
 PORT = 65432
