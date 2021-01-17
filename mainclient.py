@@ -2,19 +2,11 @@ import socket
 import selectors 
 import types
 
-messages = [b'Prva poruka s klijenta.', b'Druga poruka s klijenta.']
 
 HOST = '127.0.0.1'
 PORT = 65432
-
-sel = selectors.DefaultSelector()
-nb_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-nb_socket.bind((HOST,PORT))
-nb_socket.listen()
-print('Slušam na ', (HOST,PORT))
-nb_socket.setblocking(False)
-sel.register(nb_socket,selectors.EVENT_READ,data=None)
-
+num_conns = 5
+messages = [b'Prva poruka s klijenta.', b'Druga poruka s klijenta.']
 
 def start_connections (HOST,PORT,num_conns):
     server_addr = (HOST,PORT)
@@ -30,37 +22,38 @@ def start_connections (HOST,PORT,num_conns):
                 recv_total = 0,
                 messages = list(messages),
                 outb=b'')
-
-        sel.register(sock,events,data = dataVAR)
-
-        while True:
-            events = sel.select(timeout=None)
-            for key, mask in events:
-                if key.data is None:
-                    pass
-                else:
-                    service_connection(key, mask)
-
+        sel.register(sock,events,data= dataVAR)
 
 def service_connection(key, mask):
         sock = key.fileobj
         dataSC = key.data
+
         if mask & selectors.EVENT_READ:
                 recv_data = sock.recv(1024) # Should be ready to read
                 if recv_data:
-                        print('received', repr(recv_data), 'from connection',
+                        print('Primljeno', repr(recv_data), 'od konekcije',
                         dataSC.connid)
                         dataSC.recv_total += len(recv_data)
+
                 if not recv_data or dataSC.recv_total == dataSC.msg_total:
-                        print('closing connection', dataSC.connid)
+                        print('Zatvaranje konekcije ', dataSC.connid)
                         sel.unregister(sock)
                         sock.close()
 
         if mask & selectors.EVENT_WRITE:
-            if not dataSC.outb and dataSC.messages:
-                dataSC.outb = dataSC.messages.pop(0)
-        if dataSC.outb:
-                print('sending', repr(dataSC.outb), 'to connection',
-                dataSC.connid)
-                sent = sock.send(dataSC.outb)
-                dataSC.outb = dataSC.outb[sent:]
+                if not dataSC.outb and dataSC.messages:
+                    dataSC.outb = dataSC.messages.pop(0)        
+                if dataSC.outb:
+                    print('Slanje ', repr(dataSC.outb), 'na konekciju',
+                    dataSC.connid)
+                    sent = sock.send(dataSC.outb)
+                    dataSC.outb = dataSC.outb[sent:]
+
+sel = selectors.DefaultSelector()
+start_connections(HOST,PORT,num_conns)
+
+
+while True:
+     events = sel.select(timeout=None)
+     for key, mask in events:
+        service_connection(key, mask)
