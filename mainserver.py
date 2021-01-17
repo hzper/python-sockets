@@ -5,6 +5,15 @@ import types
 HOST = '127.0.0.1'
 PORT = 65432
 
+sel = selectors.DefaultSelector()
+nb_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+nb_socket.bind((HOST,PORT))
+nb_socket.listen()
+print("Slusam na",(HOST,PORT))
+nb_socket.setblocking(False)
+sel.register(nb_socket,selectors.EVENT_READ,data=None)
+
+
 def accept_wrapper(sock):
 
     conn,addr = sock.accept()
@@ -17,7 +26,6 @@ def accept_wrapper(sock):
 def service_connection(key,mask):
     sock = key.fileobj
     data = key.data
-
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(1024) # vraća primljene podatke
         if recv_data:
@@ -33,12 +41,6 @@ def service_connection(key,mask):
             sent = sock.send(data.outb) #vraća broj poslanih bajtova
             data.outb = data.outb[sent:]
 
-sel = selectors.DefaultSelector()
-
-nb_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-nb_socket.bind((HOST,PORT))
-nb_socket.listen()
-
 while True:
     events = sel.select(timeout=None)
     for key, mask in events:
@@ -46,5 +48,3 @@ while True:
             accept_wrapper(key.fileobj)
         else:
             service_connection(key,mask)
-
-

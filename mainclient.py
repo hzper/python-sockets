@@ -2,7 +2,6 @@ import socket
 import selectors 
 import types
 
-
 HOST = '127.0.0.1'
 PORT = 65432
 num_conns = 5
@@ -23,6 +22,14 @@ def start_connections (HOST,PORT,num_conns):
                 messages = list(messages),
                 outb=b'')
         sel.register(sock,events,data= dataVAR)
+
+        while True:
+                 events = sel.select(timeout=None)
+                 for key, mask in events:
+                         if key.data is None:
+                                pass
+                 else:
+                        service_connection(key, mask)
 
 def service_connection(key, mask):
         sock = key.fileobj
@@ -50,10 +57,7 @@ def service_connection(key, mask):
                     dataSC.outb = dataSC.outb[sent:]
 
 sel = selectors.DefaultSelector()
+
 start_connections(HOST,PORT,num_conns)
 
 
-while True:
-     events = sel.select(timeout=None)
-     for key, mask in events:
-        service_connection(key, mask)
