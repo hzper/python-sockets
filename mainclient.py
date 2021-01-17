@@ -4,8 +4,10 @@ import types
 
 HOST = '127.0.0.1'
 PORT = 65432
-num_conns = 5
+num_conns = 2
 messages = [b'Prva poruka s klijenta.', b'Druga poruka s klijenta.']
+
+sel = selectors.DefaultSelector()
 
 def start_connections (HOST,PORT,num_conns):
     server_addr = (HOST,PORT)
@@ -22,14 +24,6 @@ def start_connections (HOST,PORT,num_conns):
                 messages = list(messages),
                 outb=b'')
         sel.register(sock,events,data= dataVAR)
-
-        while True:
-                 events = sel.select(timeout=None)
-                 for key, mask in events:
-                         if key.data is None:
-                                pass
-                 else:
-                        service_connection(key, mask)
 
 def service_connection(key, mask):
         sock = key.fileobj
@@ -56,8 +50,13 @@ def service_connection(key, mask):
                     sent = sock.send(dataSC.outb)
                     dataSC.outb = dataSC.outb[sent:]
 
-sel = selectors.DefaultSelector()
 
 start_connections(HOST,PORT,num_conns)
 
-
+# while start_connections(HOST,PORT,num_conns):
+#         events = sel.select(timeout=None)
+#         for key,mask in events:
+#                 if key.data is None:
+#                         pass
+#                 else:
+#                         service_connection(key,mask)

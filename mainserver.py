@@ -9,10 +9,10 @@ sel = selectors.DefaultSelector()
 nb_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 nb_socket.bind((HOST,PORT))
 nb_socket.listen()
+
 print("Slusam na",(HOST,PORT))
 nb_socket.setblocking(False)
 sel.register(nb_socket,selectors.EVENT_READ,data=None)
-
 
 def accept_wrapper(sock):
 
@@ -37,7 +37,7 @@ def service_connection(key,mask):
 
     if mask & selectors.EVENT_WRITE:
         if data.outb:
-            print("Echoing ",repr(data.outb),'to',data.addr)
+            print("Echoing",repr(data.outb),'to',data.addr)
             sent = sock.send(data.outb) #vraća broj poslanih bajtova
             data.outb = data.outb[sent:]
 
